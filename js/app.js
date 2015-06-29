@@ -1,10 +1,14 @@
 function initialize() {
   var places = [
-    'the ohio statehouse',
-    'the ohio state university',
     'leveque tower',
     'cosi',
-    'franklin park conservatory'
+    'franklin park conservatory and botanical gardens',
+    'the columbus clippers',
+    'ohio stadium',
+    'columbus blue jackets',
+    'columbus park of roses',
+    'lifestyle communities pavilion',
+    'greater columbus convention center'
   ];
   var map;
   
@@ -12,7 +16,7 @@ function initialize() {
     var mapDiv = document.getElementById('map-canvas');
     var mapOptions = {
       center: {lat: 39.9833, lng: -82.9833},
-      zoom: 10,
+      zoom: 11,
       disableDefaultUI: true
     };
     map = new google.maps.Map(mapDiv, mapOptions);
@@ -42,11 +46,38 @@ function initialize() {
       title: placeData.name
     });
 
+    contentDiv = document.createElement('div');
+    contentDiv.innerHTML = '<h2>' + placeData.name + '</h2>';
     var infoWindow = new google.maps.InfoWindow({
-      content: placeData.name
+      content: contentDiv,
+      maxWidth: 300
     });
     
     google.maps.event.addListener(marker, 'click', function() {
+      var flickrUrl = 'https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=48176340165d2b6fba06370ce7e21e95&format=json&jsoncallback=?&text=' + placeData.name + ' columbus ohio';
+      $.getJSON(flickrUrl, function(data) {
+        var photos = data.photos.photo;
+        var randomPhotos = [];
+        for (var i = 0; i < 4; i++) {
+          randomIndex = Math.floor(Math.random() * photos.length);
+          randomPhotos.push(photos[randomIndex]);
+        }
+        var infoWindowContent = '<h2>' + marker.getTitle() + '</h2>';
+        for (var i = 0; i < 4; i++) {
+          var photoUrl = 'https://farm' + randomPhotos[i].farm + '.staticflickr.com/' +
+           randomPhotos[i].server + '/' + randomPhotos[i].id + '_' + randomPhotos[i].secret + '_q.jpg';
+          infoWindowContent += '<img src=' + photoUrl + '>';
+        }
+        // var photo = data.photos.photo[0];
+        // var photoUrl = 'https://farm' + photo.farm + '.staticflickr.com/' +
+        //   photo.server + '/' + photo.id + '_' + photo.secret + '_q.jpg';
+        // console.log(photoUrl);
+        // infoWindow.setContent('<h2>' + marker.getTitle() + '</h2>' +
+        //   '<img src=' + photoUrl + '>');
+        infoWindow.setContent(infoWindowContent);
+      }).error(function(jqXHR, errorString) {
+        console.log('flickr images could not be loaded: ' + errorString);
+      });
       infoWindow.open(map, marker);
     });
     
@@ -82,7 +113,7 @@ function initialize() {
     });
     
     self.selectMapMarker = function() {
-      console.log(this.title + ' clicked.');
+      console.log(this.getTitle() + ': ' + this.getPosition().lat() + ', ' + this.getPosition().lng());
       var infoWindow = new google.maps.InfoWindow({
         content: this.title
       });
