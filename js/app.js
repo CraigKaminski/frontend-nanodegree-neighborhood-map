@@ -1,3 +1,4 @@
+'use strict';
 // The mapView object holds all the logic for creating and manipulating the map.
 // An immediately-invoked function expression is used to hide any properties and
 // methods not required outside of the object.
@@ -43,7 +44,8 @@ var mapView = (function() {
     
     // For each element in the places array, use the places service to
     // determine the coordinates of the place and place a map marker there.
-    for (var i = 0; i < places.length; i++) {
+    var numberOfPlaces = places.length;
+    for (var i = 0; i < numberOfPlaces; i++) {
       placesService.textSearch({query: places[i]}, function(results, status) {
         // Make sure the place service successful found a location before
         // adding a map marker
@@ -97,7 +99,7 @@ var mapView = (function() {
       
       // Randomly select photos from the ones obtained from Flickr
       for (var i = 0; i < 4; i++) {
-        randomIndex = Math.floor(Math.random() * photos.length);
+        var randomIndex = Math.floor(Math.random() * photos.length);
         randomPhotos.push(photos[randomIndex]);
       }
       
@@ -121,6 +123,7 @@ var mapView = (function() {
       infoWindow.setContent('<h2>' + marker.getTitle() +
         '</h2><p>Unable to retrieve photos from Flickr</p>'
       );
+      console.log('Flickr AJAX call failed with error: ' + errorString);
     });
     
     // Display the info window for the map marker
@@ -161,7 +164,7 @@ var ViewModel = function() {
       // The filter function will return any map marker that contains the
       // text in the search input in its title.
       if (marker.title.toLowerCase().indexOf(self.searchTerm().toLowerCase()) > -1) {
-        marker.setVisible(true)
+        marker.setVisible(true);
         return true;
       } else {
         marker.setVisible(false);
