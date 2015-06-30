@@ -1,26 +1,64 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <title>Neighborhood Map</title>
   <meta charset="utf-8">
   <style>
+    body,
+    html {
+      height: 98%;
+      width: 98%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    h1 {
+      text-align: center;
+    }
+    
     #map-canvas {
       height: 600px;
       width: 600px;
-      margin: 0 20px 0 0;
+      margin: 0 20px 20px 20px;
       padding: 0;
       float: left;
+    }
+    
+    @media (max-width: 1024px) {
+      #map-canvas {
+        height: 50%;
+        width: 100%;
+        float: none;
+      }
+      
+      #search-list {
+        width: 400px;
+        margin: 0 auto;
+      }
+    }
+    
+    #location-list {
+      padding: 0;
+    }
+    
+    li {
+      cursor: pointer;
+      list-style-type: none;
     }
   </style>
 </head>
 <body>
+  <h1>Neighborhood Map</h1>
   <div id="map-canvas"></div>
-  <div id="search-bar">
+  <div id="search-list">
+    <!-- Bind the contents of the search box to the serchTerm observable -->
     <label>Search:<input id="search-term" data-bind="value: searchTerm, valueUpdate: 'input'"></label>
+    <!-- Use a foreach binding to create a list item for each element in the filteredMapMarkers
+    compbute observable -->
+    <ul id="location-list" data-bind="foreach: filteredMapMarkers">
+      <li data-bind="text: title, click: $parent.selectMapMarker"></li>
+    </ul>
   </div>
-  <ul id="location-list" data-bind="foreach: filteredMapMarkers">
-    <li data-bind="text: title, click: $parent.selectMapMarker"></li>
-  <ul>
   <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
   <script src="js/knockout-3.3.0.js"></script>
   <script src="js/jquery-2.1.4.min.js"></script>
