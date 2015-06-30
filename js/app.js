@@ -22,6 +22,12 @@ var mapView = (function() {
   // A variable which will hold a reference to the Google map.
   var map;
   
+  // Create an info window object. Using the same info window object for all the map
+  // markers means a currently open info window will close when another marker is clicked
+  var infoWindow = new google.maps.InfoWindow({
+    maxWidth: 325
+  });
+  
   // This function creates a Google map
   function drawMap() {
     // Obtain a reference to the div which will contain the map
@@ -84,10 +90,10 @@ var mapView = (function() {
     // location indicated by the provided map marker.
     var flickrUrl = 'https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=48176340165d2b6fba06370ce7e21e95&format=json&jsoncallback=?&text=' + marker.getTitle() + ' columbus ohio';
     
-    // Create an info window object.
-    var infoWindow = new google.maps.InfoWindow({
-      maxWidth: 325
-    });
+    // Replace the previous content of the info window with the title of the provided marker.
+    // The 300x300 div reserves the space for the photos that will be added when the
+    // AJAX call returns. This allows the info window to fit in the map area. 
+    infoWindow.setContent('<h2>' + marker.getTitle() + '</h2><div style="width: 300px; height: 300px"></div>');
     
     // Make an AJAX call to Flickr to obtain photos for the map marker's location.
     $.getJSON(flickrUrl, function(data) {
@@ -193,4 +199,24 @@ var searchListViewModel = new ViewModel();
 window.onload = function() {
   mapView.init();
   ko.applyBindings(searchListViewModel);
+  
+  $('#side-bar-div').attr('side-bar-hidden', 1);
+  
+  $('#side-bar-div').click(function() {
+    if ($(this).attr('side-bar-hidden') == 1) {
+      $(this).attr('side-bar-hidden', 0);
+      $(this).animate({
+        left: '0'
+      });
+    } else {
+      $(this).attr('side-bar-hidden', 1);
+      $(this).animate({
+        left: '-264'
+      });
+    }
+  });
+  
+  $('input').click(function(event) {
+    event.stopPropagation();
+  });
 };

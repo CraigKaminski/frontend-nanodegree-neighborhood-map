@@ -3,56 +3,77 @@
 <head>
   <title>Neighborhood Map</title>
   <meta charset="utf-8">
+  <meta name=viewport content="width=device-width, initial-scale=1">
   <style>
     body,
     html {
-      height: 98%;
-      width: 98%;
+      height: 100%;
+      width: 100%;
       margin: 0;
       padding: 0;
     }
     
-    h1 {
-      text-align: center;
-    }
-    
     .map {
-      height: 600px;
-      width: 600px;
-      margin: 0 20px 20px 20px;
-      padding: 0;
-      float: left;
+      height: 100%;
+      width: 100%;
     }
     
-    @media (max-width: 1024px) {
-      .map {
-        height: 50%;
-        width: 98%;
-        float: none;
-      }
-      
-      .search-and-list {
-        width: 400px;
-        margin: 0 auto;
-      }
+    .side-bar {
+      width: 300px;
+      height: 80%;
+      background-color: lightblue;
+      opacity: 0.9;
+      border-radius: 0 10px 10px 0;
+      position: absolute;
+      top: 10%;
+      left: -264px;
+      display: flex;
+      display: -webkit-flex;
+      flex-direction: column;
+      -webkit-flex-direction: column;
+    }
+    
+    .input-container {
+      display: block;
+      width: 280px;
+      margin: 10px auto;
+    }
+    
+    input {
+      width: 250px;
+      font-size: 1em;
+      border-style: none;
+      vertical-align: top;
     }
     
     ul {
+      width: 250px;
+      height: 100%;
+      margin: 0 10px;
       padding: 0;
+      overflow-y: auto;
     }
     
     li {
+      margin: 5px 0;
       cursor: pointer;
       list-style-type: none;
+      font-size: 1em;
+    }
+    
+    li:hover {
+      background-color: lavender;
     }
   </style>
 </head>
 <body>
-  <h1>Neighborhood Map</h1>
   <div class="map" id="map-canvas"></div>
-  <div class="search-and-list">
-    <!-- Bind the contents of the search box to the serchTerm observable -->
-    <label>Search:<input data-bind="value: searchTerm, valueUpdate: 'input'"></label>
+  <div class="side-bar" id="side-bar-div">
+    <div class="input-container">
+      <!-- Bind the contents of the search box to the serchTerm observable -->
+      <input data-bind="value: searchTerm, valueUpdate: 'input'">
+      <img src="images/magnifier-icon-24.png" alt="magnifying glass">
+    </div>
     <!-- Use a foreach binding to create a list item for each element in the filteredMapMarkers
     computed observable -->
     <ul data-bind="foreach: filteredMapMarkers">
